@@ -1,7 +1,9 @@
 import AppRouter from "./appRouter"
 import { Toaster } from "react-hot-toast"
-function App() {
 
+import { useSocketPresence } from "./api/socket.js"
+function App() {
+  useSocketPresence();
   return (
     <>
       <Toaster position="top-center" />

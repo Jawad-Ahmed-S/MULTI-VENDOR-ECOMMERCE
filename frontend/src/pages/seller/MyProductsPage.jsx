@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import ProductTable from "../../components/seller/ProductTable";
 import { useGetMyProducts, useDeleteProduct } from "../../api/product";
 import { PlusCircle } from "lucide-react";
-
+ 
 export default function MyProductsPage() {
   const { data, isLoading, isError, error } = useGetMyProducts();
   const products = data?.data || [];

@@ -8,6 +8,9 @@ import searchRouter from "./routes/search.route.js"
 import orderRouter from "./routes/order.route.js"
 import cartRouter from "./routes/cart.route.js"
 import paymentRouter from "./routes/payment.route.js"
+import messageRouter from "./routes/message.route.js"
+import conversationRouter from "./routes/conversation.route.js"
+
 import { stripeWebhook } from "./controllers/payment.controller.js";
 import cors from "cors"
 import { errorHandlerMiddleware } from "./middleware/errorHandler.js";
@@ -46,6 +49,8 @@ app.use("/api/v1/store",storeRouter)
 app.use("/api/v1/search",searchRouter)
 app.use("/api/v1/cart",cartRouter)
 app.use("/api/v1/order",orderRouter)
+app.use("/api/v1/message",messageRouter)
+app.use("/api/v1/conversation",conversationRouter)
 
 
 app.use(errorHandlerMiddleware)

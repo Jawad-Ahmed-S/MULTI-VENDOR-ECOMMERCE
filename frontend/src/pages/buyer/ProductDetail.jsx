@@ -1,17 +1,19 @@
 import { useState } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { useGetProduct } from "../../api/product";
 import { useAddToCart } from "../../api/cart";
 import { useToggleWishlist, useGetWishlist } from "../../api/wishlist";
+import { useCreateOrGetConversation } from "../../api/conversation";
 import RatingStars from "../../components/common/RatingStars";
 import Breadcrumbs from "../../components/common/Breadcrumbs";
 import LoadingSkeleton from "../../components/common/LoadingSkeleton";
 import AuthPromptModal from "../../components/authPromptModal";
-import { ShoppingBag, Store as StoreIcon, Heart, Plus, Minus } from "lucide-react";
+import { ShoppingBag, Store as StoreIcon, Heart, Plus, Minus, MessageCircle } from "lucide-react";
 
 export default function ProductDetail() {
   const { id } = useParams();
+  const navigate = useNavigate();
   const { data, isLoading } = useGetProduct(id);
   const currentUser = useSelector((state) => state.user.currentUser?.data);
 
@@ -22,6 +24,8 @@ export default function ProductDetail() {
   const { mutate: addToCart, isPending: isAddingCart } = useAddToCart();
   const { data: wishlistData } = useGetWishlist(!!currentUser);
   const { mutate: toggleWishlist } = useToggleWishlist();
+  const { mutate: createOrGetConversation, isPending: isContactingSeller } =
+    useCreateOrGetConversation();
 
   const product = data?.data;
 
@@ -48,6 +52,23 @@ export default function ProductDetail() {
       return;
     }
     toggleWishlist(product._id);
+  };
+
+  const handleContactSeller = () => {
+    if (!currentUser) {
+      setShowAuthModal(true);
+      return;
+    }
+    createOrGetConversation(
+      { buyer: currentUser._id, seller: product.store._id },
+      {
+        onSuccess: (res) => {
+          // hand the freshly created/fetched conversation straight to the inbox
+          // page so it opens pre-selected instead of landing on an empty list
+          navigate("/messages", { state: { conversation: res.data } });
+        },
+      }
+    );
   };
 
   if (isLoading) {
@@ -164,6 +185,17 @@ export default function ProductDetail() {
                 <ShoppingBag size={18} />
                 {isAddingCart ? "Adding..." : "Add to Cart"}
               </button>
+
+              {product.store && (
+                <button
+                  onClick={handleContactSeller}
+                  disabled={isContactingSeller}
+                  className="flex-1 bg-background text-ink font-medium py-3 rounded-md border border-border flex items-center justify-center gap-2 hover:bg-surface-muted transition-colors cursor-pointer disabled:opacity-50"
+                >
+                  <MessageCircle size={18} />
+                  {isContactingSeller ? "Opening chat..." : "Contact Seller"}
+                </button>
+              )}
             </div>
           </div>
         </div>

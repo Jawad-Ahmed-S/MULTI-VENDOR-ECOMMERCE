@@ -30,11 +30,14 @@ import SellerStoreOrdersPage from "./pages/seller/SellerStoreOrdersPage.jsx"
 import AdminAllOrdersPage from "./pages/admin/AdminAllOrdersPage.jsx"
 import SellerAllOrdersPage from "./pages/seller/SellerAllOrdersPage.jsx"
 import CheckoutSuccessPage from "./pages/buyer/CheckoutSuccessPage.jsx"
+import MessagesPage from "./pages/messagesPage.jsx"
 // import Wishlist from "./pages/Wishlist.jsx"
 // import Cart from "./pages/Cart.jsx"
 
 
+
 export default function AppRouter() {
+
   return (
     <BrowserRouter>
       <Routes>
@@ -52,6 +55,7 @@ export default function AppRouter() {
           {/* <Route path="/store/:id" element={<StorePage />} /> */}
           {/* <Route path="/wishlist" element={<Wishlist />} />*/}
           <Route path="/cart" element={<CartPage />} /> 
+          <Route path="/messages" element={<MessagesPage />} /> 
           <Route path="/orders" element={<MyOrdersPage />} /> 
           <Route path="/checkout" element={<CheckoutPage />} /> 
           <Route path="/checkout/success" element={<CheckoutSuccessPage />} /> 
@@ -69,6 +73,7 @@ export default function AppRouter() {
           <Route path="/seller/store/:storeId/product/create" element={<CreateProductPage />} />
           <Route path="/seller/store/:storeId/orders" element={<SellerStoreOrdersPage />} />
           <Route path="/seller/orders" element={<SellerAllOrdersPage />} />
+          <Route path="/seller/messages" element={<MessagesPage />} /> 
         </Route>
 
         

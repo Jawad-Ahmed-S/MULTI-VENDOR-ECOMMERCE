@@ -7,7 +7,13 @@
             (resolve, reject) => {
                 const stream = cloudinary.uploader.upload_stream(
                     { folder, resource_type: 'image', ...options },
-                    (err, res) => {if (err) return reject(err);resolve(res);}
+                    (err, res) => {
+                        if (err) {
+                            console.error("Cloudinary Stream Error:", err); 
+                            return reject(err);
+                        }
+                        resolve(res);
+                    }
                 )
                 streamifier.createReadStream(buffer).pipe(stream);
             }
