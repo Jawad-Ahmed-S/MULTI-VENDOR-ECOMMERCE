@@ -3,15 +3,25 @@ import { errorHandler } from "../utils/errorHandler.js";
 import Product from "../models/product.model.js";
 import Store from "../models/store.model.js";
 import { uploadToCloudinary } from "../utils/cloudinary.js";
-// =====================================================
-// CUSTOMER CONTROLLERS
-// =====================================================
 
+// CUSTOMER CONTROLLERS
 // Get all approved products across the platform
 export const getAllProducts = catchAsyncError(async (req, res, next) => {
-    const products = await Product.find({
-        approvalStatus: "approved",
-    }).populate("store", "name banner ratings");
+
+    const apiFeatures = new ApiClass(
+        Product.find({
+            approvalStatus: "approved",
+        })
+            .populate("store", "name banner ratings")
+            .select("-reviews"),
+        req.query
+    )
+        .search()
+        .filter()
+        .activeSale()
+        .pagination(10);
+
+    const products = await apiFeatures.query;
 
     return res.status(200).json({
         success: true,
@@ -31,7 +41,7 @@ export const getProduct = catchAsyncError(async (req, res, next) => {
     const product = await Product.findOne({
         _id: productId,
         approvalStatus: "approved",
-    }).populate("store", "name banner ratings");
+    }).populate("store", "name banner ratings").select("-reviews")
 
     if (!product) {
         return next(new errorHandler(404, "No Product found for this Id!"));
@@ -65,7 +75,7 @@ export const getStoreProducts = catchAsyncError(async (req, res, next) => {
     const products = await Product.find({
         store: storeId,
         approvalStatus: "approved",
-    });
+    }).select("-reviews")
 
     return res.status(200).json({
         success: true,
@@ -428,5 +438,136 @@ export const adminDeleteProduct = catchAsyncError(async (req, res, next) => {
     return res.status(200).json({
         success: true,
         message: "Product Deleted by Admin!",
+    });
+});
+
+
+const recalculateRatings = (product) => {
+  if (!product.reviews || product.reviews.length === 0) {
+    product.ratings = 0;
+    return;
+  }
+  const total = product.reviews.reduce((sum, r) => sum + (r.rating || 0), 0);
+  product.ratings = total / product.reviews.length;
+};
+
+// =====================================================
+// REVIEW CONTROLLERS
+// =====================================================
+
+// Get all reviews for a product (logged-in users only)
+export const getProductReviews = catchAsyncError(async (req, res, next) => {
+    // Defensive check — isAuthenticated middleware should already block this,
+    // but we guard here in case this controller is ever reused elsewhere.
+    if (!req.user) {
+        return next(new errorHandler(401, "You must be logged in to view reviews!"));
+    }
+
+    const { productId } = req.params;
+
+    if (!productId) {
+        return next(new errorHandler(404, "No ProductId found!"));
+    }
+
+    const product = await Product.findOne({
+        _id: productId,
+        approvalStatus: "approved",
+    }).populate("reviews.user", "name avatar");
+
+    if (!product) {
+        return next(new errorHandler(404, "No Product found for this Id!"));
+    }
+
+    return res.status(200).json({
+        success: true,
+        message: "Reviews Fetched!",
+        data: product.reviews,
+    });
+});
+
+// Add or update the logged-in user's review for a product
+export const addReview = catchAsyncError(async (req, res, next) => {
+    const userId = req.user.id;
+    const { productId } = req.params;
+    const { rating, comment } = req.body;
+
+    if (!productId) {
+        return next(new errorHandler(404, "No ProductId found!"));
+    }
+
+    if (!rating || rating < 1 || rating > 5) {
+        return next(new errorHandler(400, "Please provide a rating between 1 and 5!"));
+    }
+
+    const product = await Product.findOne({
+        _id: productId,
+        approvalStatus: "approved",
+    });
+
+    if (!product) {
+        return next(new errorHandler(404, "No Product found for this Id!"));
+    }
+
+    const existingReview = product.reviews.find(
+        (r) => r.user.toString() === userId.toString()
+    );
+
+    if (existingReview) {
+        existingReview.rating = rating;
+        existingReview.comment = comment;
+        existingReview.createdAt = Date.now();
+    } else {
+        product.reviews.push({
+            user: userId,
+            rating,
+            comment,
+            createdAt: Date.now(),
+        });
+    }
+
+    recalculateRatings(product);
+    await product.save();
+
+    return res.status(200).json({
+        success: true,
+        message: existingReview ? "Review Updated!" : "Review Added!",
+        data: product.reviews,
+    });
+});
+
+// Delete the logged-in user's own review
+export const deleteReview = catchAsyncError(async (req, res, next) => {
+    const userId = req.user.id;
+    const { productId } = req.params;
+
+    if (!productId) {
+        return next(new errorHandler(404, "No ProductId found!"));
+    }
+
+    const product = await Product.findById(productId);
+
+    if (!product) {
+        return next(new errorHandler(404, "No Product found for this Id!"));
+    }
+
+    const reviewExists = product.reviews.some(
+        (r) => r.user.toString() === userId.toString()
+    );
+
+    if (!reviewExists) {
+        return next(new errorHandler(404, "You have not reviewed this product!"));
+    }
+
+    product.reviews = product.reviews.filter(
+        (r) => r.user.toString() !== userId.toString()
+    );
+
+    recalculateRatings(product);
+    await product.save();
+
+    return res.status(200).json({
+        success: true,
+        message: "Review Deleted!",
+        data: product.reviews,
     });
 });

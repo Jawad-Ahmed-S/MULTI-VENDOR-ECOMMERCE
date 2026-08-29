@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { useGetProduct } from "../../api/product";
 import { useAddToCart } from "../../api/cart";
 import { useToggleWishlist, useGetWishlist } from "../../api/wishlist";
 import { useCreateOrGetConversation } from "../../api/conversation";
@@ -9,7 +8,8 @@ import RatingStars from "../../components/common/RatingStars";
 import Breadcrumbs from "../../components/common/Breadcrumbs";
 import LoadingSkeleton from "../../components/common/LoadingSkeleton";
 import AuthPromptModal from "../../components/authPromptModal";
-import { ShoppingBag, Store as StoreIcon, Heart, Plus, Minus, MessageCircle } from "lucide-react";
+import { ShoppingBag, Store as StoreIcon, Heart, Plus, Minus, MessageCircle,Star, Trash2 } from "lucide-react";
+import { useGetProduct, useGetProductReviews, useAddReview, useDeleteReview } from "../../api/product";
 
 export default function ProductDetail() {
   const { id } = useParams();
@@ -70,6 +70,39 @@ export default function ProductDetail() {
       }
     );
   };
+
+  const [reviewRating, setReviewRating] = useState(0);
+const [reviewComment, setReviewComment] = useState("");
+
+const { data: reviewsData, isLoading: isLoadingReviews } = useGetProductReviews(id, !!currentUser);
+const { mutate: submitReview, isPending: isSubmittingReview } = useAddReview();
+const { mutate: removeReview, isPending: isDeletingReview } = useDeleteReview();
+
+const reviews = reviewsData?.data || [];
+const myReview = reviews.find((r) => (r.user?._id || r.user) === currentUser?._id);
+
+const handleSubmitReview = () => {
+  if (!currentUser) {
+    setShowAuthModal(true);
+    return;
+  }
+  if (!reviewRating) {
+    return;
+  }
+  submitReview(
+    { productId: product._id, rating: reviewRating, comment: reviewComment },
+    {
+      onSuccess: () => {
+        setReviewRating(0);
+        setReviewComment("");
+      },
+    }
+  );
+};
+
+const handleDeleteReview = () => {
+  removeReview(product._id);
+};
 
   if (isLoading) {
     return (
@@ -199,9 +232,98 @@ export default function ProductDetail() {
             </div>
           </div>
         </div>
+        {/* Reviews Section */}
+<div className="border-t border-border pt-6 space-y-4">
+  <h2 className="font-display text-lg font-semibold text-ink">Reviews</h2>
+
+  {!currentUser ? (
+    <div className="bg-surface-muted border border-border rounded-lg p-4 text-sm text-ink-muted">
+      <button
+        onClick={() => setShowAuthModal(true)}
+        className="text-accent font-medium hover:underline cursor-pointer"
+      >
+        Log in
+      </button>{" "}
+      to see and write reviews for this product.
+    </div>
+  ) : (
+    <>
+      {/* Write / Update Review */}
+      <div className="bg-surface border border-border rounded-lg p-4 space-y-3">
+        <p className="text-sm font-medium text-ink">
+          {myReview ? "Update your review" : "Write a review"}
+        </p>
+        <div className="flex items-center gap-1">
+          {[1, 2, 3, 4, 5].map((star) => (
+            <button
+              key={star}
+              type="button"
+              onClick={() => setReviewRating(star)}
+              className="cursor-pointer"
+            >
+              <Star
+                size={20}
+                className={star <= (reviewRating || myReview?.rating || 0) ? "fill-brand text-brand" : "text-ink-muted"}
+              />
+            </button>
+          ))}
+        </div>
+        <textarea
+          value={reviewComment || myReview?.comment || ""}
+          onChange={(e) => setReviewComment(e.target.value)}
+          placeholder="Share your thoughts about this product..."
+          rows={3}
+          className="w-full text-sm border border-border rounded-md p-2 bg-background text-ink resize-none focus:outline-none focus:ring-1 focus:ring-accent"
+        />
+        <div className="flex gap-2">
+          <button
+            onClick={handleSubmitReview}
+            disabled={isSubmittingReview || !reviewRating}
+            className="bg-accent text-white text-sm font-medium px-4 py-2 rounded-md hover:bg-accent/90 disabled:opacity-50 cursor-pointer"
+          >
+            {isSubmittingReview ? "Submitting..." : myReview ? "Update Review" : "Submit Review"}
+          </button>
+          {myReview && (
+            <button
+              onClick={handleDeleteReview}
+              disabled={isDeletingReview}
+              className="flex items-center gap-1 text-sm text-danger px-3 py-2 rounded-md border border-border hover:bg-surface-muted disabled:opacity-50 cursor-pointer"
+            >
+              <Trash2 size={14} />
+              Delete
+            </button>
+          )}
+        </div>
       </div>
 
+      {/* Review List */}
+      {isLoadingReviews ? (
+        <LoadingSkeleton type="card" count={2} />
+      ) : reviews.length === 0 ? (
+        <p className="text-sm text-ink-muted">No reviews yet. Be the first to review this product.</p>
+      ) : (
+        <div className="space-y-3">
+          {reviews.map((review) => (
+            <div key={review._id} className="border border-border rounded-lg p-3 bg-surface">
+              <div className="flex items-center justify-between">
+                <span className="text-sm font-medium text-ink">{review.user?.name || "Anonymous"}</span>
+                <RatingStars rating={review.rating} />
+              </div>
+              {review.comment && (
+                <p className="text-sm text-ink-muted mt-1">{review.comment}</p>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
+    </>
+  )}
+</div>
+      </div>
+      
+      
       <AuthPromptModal isOpen={showAuthModal} onClose={() => setShowAuthModal(false)} />
+      
     </>
   );
 }

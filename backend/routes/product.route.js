@@ -14,6 +14,9 @@ import {
     rejectProduct,
     adminUpdateProduct,
     adminDeleteProduct,
+    getProductReviews,
+    addReview,
+    deleteReview,
 } from "../controllers/product.controller.js";
 
 import {
@@ -69,6 +72,8 @@ router.route("/admin/:productId")
     .delete(isAuthenticated, isAdmin, adminDeleteProduct);
 
 
+router.route("/:productId/reviews").get(isAuthenticated, getProductReviews);
+router.route("/:productId/review").post(isAuthenticated, addReview).delete(isAuthenticated, deleteReview);
 // ==========================================
 // PARAMETERIZED PUBLIC ROUTE
 // (Placed at bottom to prevent route collisions)

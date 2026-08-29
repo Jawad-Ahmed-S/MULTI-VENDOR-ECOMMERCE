@@ -194,3 +194,48 @@ export function useAdminDeleteProduct() {
     onError: (err) => toast.error(err?.response?.data?.message || "Failed to delete product"),
   });
 }
+
+export const getProductReviews = (productId) =>
+  api.get(`/product/${productId}/reviews`).then((res) => res.data);
+
+export const addReview = ({ productId, rating, comment }) =>
+  api.post(`/product/${productId}/review`, { rating, comment }).then((res) => res.data);
+
+export const deleteReview = (productId) =>
+  api.delete(`/product/${productId}/review`).then((res) => res.data);
+
+
+// Review Hooks
+export function useGetProductReviews(productId, enabled = true) {
+  return useQuery({
+    queryKey: ["productReviews", productId],
+    queryFn: () => getProductReviews(productId),
+    enabled: !!productId && enabled,
+  });
+}
+
+export function useAddReview() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: addReview,
+    onSuccess: (data, variables) => {
+      toast.success(data?.message || "Review submitted!");
+      queryClient.invalidateQueries({ queryKey: ["productReviews", variables.productId] });
+      queryClient.invalidateQueries({ queryKey: ["product", variables.productId] });
+    },
+    onError: (err) => toast.error(err?.response?.data?.message || "Failed to submit review"),
+  });
+}
+
+export function useDeleteReview() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: deleteReview,
+    onSuccess: (data, productId) => {
+      toast.success(data?.message || "Review deleted!");
+      queryClient.invalidateQueries({ queryKey: ["productReviews", productId] });
+      queryClient.invalidateQueries({ queryKey: ["product", productId] });
+    },
+    onError: (err) => toast.error(err?.response?.data?.message || "Failed to delete review"),
+  });
+}

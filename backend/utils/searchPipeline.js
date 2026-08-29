@@ -3,6 +3,7 @@ export const searchPipeline = ({
   category,
   minPrice,
   maxPrice,
+  activeSale,
   page = 1,
   limit = 10,
 }) => {
@@ -14,17 +15,18 @@ export const searchPipeline = ({
     $or: [{ name: regex }, { category: regex }, { description: regex }, { tags: regex }],
   };
 
+  if (activeSale === "true") {
+    productMatch.saleEndsAt = {
+        $gt: new Date()
+    };
+}
   if (category) productMatch.category = category;
   if (minPrice || maxPrice) {
     productMatch.discountPrice = {};
     if (minPrice) productMatch.discountPrice.$gte = Number(minPrice);
     if (maxPrice) productMatch.discountPrice.$lte = Number(maxPrice);
   }
-
-  // Filters that only make sense on products push us into
-  // products-only mode — stores don't have category/price, so
-  // including them alongside a filtered product set is misleading.
-  const onlyProducts = Boolean(category || minPrice || maxPrice);
+  const onlyProducts = Boolean(category || minPrice || maxPrice || activeSale==="true");
 
   const skipNum = (page - 1) * limit;
 

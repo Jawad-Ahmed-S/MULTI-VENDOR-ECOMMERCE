@@ -1,7 +1,7 @@
 import api from "./axiosInstance"
 import { useDispatch } from "react-redux"
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
-import { setUser } from "../redux/userSlice/userSlice.js"
+import { setUser, updateUser, clearUser } from "../redux/userSlice/userSlice.js"
 import { useNavigate } from "react-router-dom"
 import toast from "react-hot-toast"
 
@@ -36,13 +36,49 @@ export function useRegister() {
   })
 }
 
+// =====================================================
+// SELF-SERVICE — a logged-in user managing their own account
+// (hits /user/me, not /user/admin/:userId — no admin role needed)
+// =====================================================
+
+export const updateMyDetails = (userData) =>
+  api.put("/user/me", userData).then((res) => res.data);
+
+export const deleteMyAccount = () =>
+  api.delete("/user/me").then((res) => res.data);
+
+export function useUpdateMyDetails() {
+  const dispatch = useDispatch();
+  return useMutation({
+    mutationFn: updateMyDetails,
+    onSuccess: (data) => {
+      toast.success(data?.message || "Details updated!");
+      dispatch(updateUser(data.data));
+    },
+    onError: (err) =>
+      toast.error(err?.response?.data?.message || "Failed to update details"),
+  });
+}
+
+export function useDeleteMyAccount() {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  return useMutation({
+    mutationFn: deleteMyAccount,
+    onSuccess: (data) => {
+      toast.success(data?.message || "Account deleted!");
+      dispatch(clearUser());
+      navigate("/login");
+    },
+    onError: (err) =>
+      toast.error(err?.response?.data?.message || "Failed to delete account"),
+  });
+}
+
 
 export const adminGetAllUsers = () =>
   api.get("/user/admin/users").then((res) => res.data);
  
-// Returns all sellers, each with a `stores` array attached (empty if the
-// seller hasn't created a store yet). Replaces the old separate
-// sellers/owners endpoints — one list, always consistent.
 export const adminGetAllSellers = () =>
   api.get("/user/admin/sellers").then((res) => res.data);
  

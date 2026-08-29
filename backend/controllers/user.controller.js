@@ -143,11 +143,94 @@ export const getWishlist = catchAsyncError(async (req, res,next) => {
 });
 
 // =====================================================
+// SELF-SERVICE — a logged-in user managing their own account.
+// Every one of these reads only req.user.id (set by isAuthenticated from
+// the token). None of them ever look at req.params, so there is no way
+// for these to be pointed at another account.
+// =====================================================
+
+// Self: Get my own details
+export const getMyDetails = catchAsyncError(async (req, res, next) => {
+
+    const userId = req.user.id;
+
+    const user = await User.findById(userId).select("-password").populate("wishlist");
+
+    if (!user) {
+        return next(new errorHandler(404, "No User found for this Id!"));
+    }
+
+    const stores = await Store.find({ owner: userId });
+
+    return res.status(200).json({
+        success: true,
+        message: "User Fetched!",
+        data: { ...user.toObject(), stores },
+    });
+});
+
+// Self: Update my own details — role is never accepted here, on purpose.
+export const updateMyDetails = catchAsyncError(async (req, res, next) => {
+
+    const userId = req.user.id;
+
+    const user = await User.findById(userId);
+
+    if (!user) {
+        return next(new errorHandler(404, "No User found for this Id!"));
+    }
+
+    const { name, email, phone } = req.body;
+
+    if (name !== undefined) user.name = name;
+    if (email !== undefined) user.email = email;
+    if (phone !== undefined) user.phone = phone;
+
+    await user.save();
+
+    return res.status(200).json({
+        success: true,
+        message: "Your details were updated!",
+        data: user,
+    });
+});
+
+// Self: Delete my own account
+export const deleteMyDetails = catchAsyncError(async (req, res, next) => {
+
+    const userId = req.user.id;
+
+    const user = await User.findById(userId);
+
+    if (!user) {
+        return next(new errorHandler(404, "No User found for this Id!"));
+    }
+
+    await User.findByIdAndDelete(userId);
+
+    // Clear the auth cookie so the now-deleted session can't keep making
+    // authenticated requests with a stale token.
+    res.cookie("token", null, {
+        expires: new Date(Date.now()),
+        httpOnly: true,
+    });
+
+    return res.status(200).json({
+        success: true,
+        message: "Your account was deleted!",
+    });
+});
+
+// =====================================================
 // ADMIN CONTROLLERS - USER MANAGEMENT
 // =====================================================
 // Split: "users" = role "user" (plain customers)
 //        "sellers" = role "seller" (may or may not have created a store yet)
 //        "owners" = role "seller" users who own at least one Store, store(s) attached
+//
+// Every one of these reads userId from req.params only — never falls back
+// to req.user.id — so an admin route can never accidentally act on the
+// admin's own account.
 
 // Admin: Get all plain users (customers)
 export const adminGetAllUsers = catchAsyncError(async (req, res, next) => {
@@ -163,8 +246,6 @@ export const adminGetAllUsers = catchAsyncError(async (req, res, next) => {
 
 // Admin: Get all sellers (role = "seller"), each with their store(s) attached.
 // A seller who hasn't created a store yet is still returned, just with stores: [].
-// (Replaces the old separate "sellers" / "owners" split — every seller is a
-// potential owner, so there's no meaningful distinction to show separately.)
 export const adminGetAllSellers = catchAsyncError(async (req, res, next) => {
 
     const sellers = await User.find({ role: "seller" }).select("-password");
@@ -198,7 +279,7 @@ export const adminGetAllSellers = catchAsyncError(async (req, res, next) => {
 });
 
 // Admin: Get a single user's full details, regardless of role
-export const adminGetUser = catchAsyncError(async (req, res, next) => {
+export const getUser = catchAsyncError(async (req, res, next) => {
 
     const { userId } = req.params;
 

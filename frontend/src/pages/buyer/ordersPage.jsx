@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
 import { useGetMyOrders, useCancelOrder } from "../../api/order";
 import LoadingSkeleton from "../../components/common/LoadingSkeleton";
 import EmptyState from "../../components/common/EmptyState";
@@ -6,6 +7,8 @@ import Breadcrumbs from "../../components/common/Breadcrumbs";
 import { Package, ExternalLink, Trash2, Calendar } from "lucide-react";
 
 export default function MyOrdersPage() {
+  const currentUser = useSelector((state) => state.user?.currentUser?.data);
+
   const { data: ordersRes, isLoading } = useGetMyOrders();
   const { mutate: cancelOrder, isPending: isCancelling } = useCancelOrder();
 
@@ -25,6 +28,24 @@ export default function MyOrdersPage() {
         return "bg-background text-ink-muted border-border";
     }
   };
+
+  if (!currentUser) {
+    return (
+      <div className="max-w-4xl mx-auto px-4 py-12 font-sans space-y-4">
+        <EmptyState
+          title="Login to see your orders"
+          message="Sign in to your account to view your order history."
+        />
+        <div className="text-center">
+          <Link to="/login">
+            <button className="bg-accent text-white text-xs font-medium px-4 py-2 rounded-md hover:bg-accent/90 transition-colors cursor-pointer">
+              Login to see
+            </button>
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
   if (isLoading) {
     return (
