@@ -172,7 +172,7 @@ export default function ProductDetail() {
                 <Link to={`/store/${product.store._id}`} className="text-xs text-accent font-medium hover:underline">
                   View Store
                 </Link>
-              </div>
+              </div> 
             )}
 
             {/* Actions */}

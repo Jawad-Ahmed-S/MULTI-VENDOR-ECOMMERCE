@@ -31,6 +31,12 @@ import AdminAllOrdersPage from "./pages/admin/AdminAllOrdersPage.jsx"
 import SellerAllOrdersPage from "./pages/seller/SellerAllOrdersPage.jsx"
 import CheckoutSuccessPage from "./pages/buyer/CheckoutSuccessPage.jsx"
 import MessagesPage from "./pages/messagesPage.jsx"
+import AdminUsersPage from "./pages/admin/AdminUsersPage.jsx"
+import WishlistPage from "./pages/buyer/wishlistPage.jsx"
+import StorePage from "./pages/buyer/StorePage.jsx"
+import CreateEventPage from "./pages/seller/createEventPage.jsx"
+import StoreEventsPage from "./pages/seller/storeEventsPage.jsx"
+import ActivationSuccess from "./pages/ActivationSucess.jsx"
 // import Wishlist from "./pages/Wishlist.jsx"
 // import Cart from "./pages/Cart.jsx"
 
@@ -42,6 +48,7 @@ export default function AppRouter() {
     <BrowserRouter>
       <Routes>
         <Route path="/login" element={<Login />} />
+        <Route path="/activation-success" element={<ActivationSuccess />} />
         <Route path="/register" element={<Register />} />
 
         
@@ -52,11 +59,11 @@ export default function AppRouter() {
           <Route path="/products" element={<ProductListing />} />
           <Route path="/search" element={<SearchResults />} />
           <Route path="/stores" element={<StoreDirectory />} />
-          {/* <Route path="/store/:id" element={<StorePage />} /> */}
-          {/* <Route path="/wishlist" element={<Wishlist />} />*/}
+          <Route path="/store/:id" element={<StorePage />} />
           <Route path="/cart" element={<CartPage />} /> 
           <Route path="/messages" element={<MessagesPage />} /> 
           <Route path="/orders" element={<MyOrdersPage />} /> 
+          <Route path="/wishlist" element={<WishlistPage />} /> 
           <Route path="/checkout" element={<CheckoutPage />} /> 
           <Route path="/checkout/success" element={<CheckoutSuccessPage />} /> 
           <Route path="/order/:orderId" element={<OrderDetailPage />} /> 
@@ -73,6 +80,8 @@ export default function AppRouter() {
           <Route path="/seller/store/:storeId/product/create" element={<CreateProductPage />} />
           <Route path="/seller/store/:storeId/orders" element={<SellerStoreOrdersPage />} />
           <Route path="/seller/orders" element={<SellerAllOrdersPage />} />
+          <Route path="/seller/:storeId/events/create" element={<CreateEventPage />} />
+          <Route path="/seller/events" element={<StoreEventsPage />} />
           <Route path="/seller/messages" element={<MessagesPage />} /> 
         </Route>
 
@@ -82,6 +91,7 @@ export default function AppRouter() {
           <Route path='/admin/orders' element={<AdminAllOrdersPage />} />
           <Route path='/admin/stores' element={<AdminStoresPage />} />
           <Route path='/admin/products' element={<AdminProductsPage />} />
+          <Route path='/admin/users' element={<AdminUsersPage />} />
         </Route>
 
         <Route path="*" element={<Navigate to="/" replace />} />

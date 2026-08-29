@@ -10,6 +10,7 @@ import cartRouter from "./routes/cart.route.js"
 import paymentRouter from "./routes/payment.route.js"
 import messageRouter from "./routes/message.route.js"
 import conversationRouter from "./routes/conversation.route.js"
+import eventRouter from "./routes/event.route.js"
 
 import { stripeWebhook } from "./controllers/payment.controller.js";
 import cors from "cors"
@@ -51,6 +52,7 @@ app.use("/api/v1/cart",cartRouter)
 app.use("/api/v1/order",orderRouter)
 app.use("/api/v1/message",messageRouter)
 app.use("/api/v1/conversation",conversationRouter)
+app.use("/api/v1/event",eventRouter)
 
 
 app.use(errorHandlerMiddleware)

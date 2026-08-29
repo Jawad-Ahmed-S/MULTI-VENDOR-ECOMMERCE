@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { Search, Heart, ShoppingCart, ChevronDown, UserRound, Store, Package, LayoutDashboard, Boxes } from "lucide-react";
+import { Search, Heart, ShoppingCart, ChevronDown, UserRound, Store, Package,ClipboardList, LayoutDashboard, ShoppingBag,MessageCircle,CalendarDays } from "lucide-react";
 import { clearUser } from "../redux/userSlice/userSlice.js";
 import { useGetCart } from "../api/cart.js";
 export default function Navbar() {
@@ -149,33 +149,89 @@ export default function Navbar() {
             <Link to="/admin/orders" className="text-brand text-[13px] hover:text-accent-text flex items-center gap-1.5">
               <Package size={14} /> Orders Management
             </Link>
+            <Link to="/admin/users" className="text-brand text-[13px] hover:text-accent-text flex items-center gap-1.5">
+              <Package size={14} /> Users Management
+            </Link>
           </>
         )}
 
         {role === "seller" && (
           <>
-            <Link to="/seller/dashboard" className="text-brand text-[13px] hover:text-accent-text flex items-center gap-1.5">
-              <LayoutDashboard size={14} /> Dashboard
-            </Link>
-            <Link to="/seller/stores" className="text-brand text-[13px] hover:text-accent-text flex items-center gap-1.5">
-              <Store size={14} /> My Stores
-            </Link>
-            <Link to="/seller/products" className="text-brand text-[13px] hover:text-accent-text flex items-center gap-1.5">
-              <Package size={14} /> My Products
-            </Link>
-            <Link to="/seller/orders" className="text-brand text-[13px] hover:text-accent-text flex items-center gap-1.5">
-              <Boxes size={14} /> My Orders
-            </Link>
-          </>
+              <Link
+                to="/seller/dashboard"
+                className="text-brand text-[13px] hover:text-accent-text flex items-center gap-1.5"
+              >
+                <LayoutDashboard size={14} /> Dashboard
+              </Link>
+
+              <Link
+                to="/seller/stores"
+                className="text-brand text-[13px] hover:text-accent-text flex items-center gap-1.5"
+              >
+                <Store size={14} /> My Stores
+              </Link>
+
+              <Link
+                to="/seller/products"
+                className="text-brand text-[13px] hover:text-accent-text flex items-center gap-1.5"
+              >
+                <Package size={14} /> My Products
+              </Link>
+
+              <Link
+                to="/seller/orders"
+                className="text-brand text-[13px] hover:text-accent-text flex items-center gap-1.5"
+              >
+                <ShoppingBag size={14} /> My Orders
+              </Link>
+
+              <Link
+                to="/seller/messages"
+                className="text-brand text-[13px] hover:text-accent-text flex items-center gap-1.5"
+              >
+                <MessageCircle size={14} /> Conversations
+              </Link>
+
+              <Link
+                to="/seller/events"
+                className="text-brand text-[13px] hover:text-accent-text flex items-center gap-1.5"
+              >
+                <CalendarDays size={14} /> Events Management
+              </Link>
+            </>
         )}
 
         {role === "user" && (
-          <>
-            <Link to="/products" className="text-brand text-[13px] hover:text-accent-text">All Products</Link>
-            <Link to="/stores" className="text-brand text-[13px] hover:text-accent-text">Stores</Link>
-            <Link to="/orders" className="text-brand text-[13px] hover:text-accent-text">My Orders</Link>
-          </>
-        )}
+              <>
+                <Link
+                  to="/products"
+                  className="text-brand text-[13px] hover:text-accent-text flex items-center gap-1.5"
+                >
+                  <ShoppingBag size={14} /> All Products
+                </Link>
+
+                <Link
+                  to="/stores"
+                  className="text-brand text-[13px] hover:text-accent-text flex items-center gap-1.5"
+                >
+                  <Store size={14} /> Stores
+                </Link>
+
+                <Link
+                  to="/orders"
+                  className="text-brand text-[13px] hover:text-accent-text flex items-center gap-1.5"
+                >
+                  <ClipboardList size={14} /> My Orders
+                </Link>
+
+                <Link
+                  to="/messages"
+                  className="text-brand text-[13px] hover:text-accent-text flex items-center gap-1.5"
+                >
+                  <MessageCircle size={14} /> Conversations
+                </Link>
+              </>
+            )}
       </div>
     </header>
   );

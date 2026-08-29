@@ -1,6 +1,7 @@
 import api from "./axiosInstance.js";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
+import { getStoreProducts } from "./product.js";
 
 // =====================================================
 // API FUNCTIONS
@@ -84,6 +85,14 @@ export function useCreateStore() {
     },
     onError: (err) => toast.error(err?.response?.data?.message || "Failed to create store"),
   });
+}
+
+export function useGetStoreProducts(storeId) {
+  return useQuery({
+    queryKey: ["storeProducts",storeId],
+    queryFn: () => getStoreProducts(storeId),
+    enabled: !!storeId,
+  })
 }
 
 export function useGetMyStores() {

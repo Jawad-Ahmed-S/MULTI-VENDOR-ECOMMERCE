@@ -25,6 +25,10 @@ const productSchema = new mongoose.Schema({
         type: Number,
         required: [true, "Please enter your product price!"],
     },
+    saleEndsAt: {
+        type: Date,
+        required:false
+    },
     stock: {
         type: Number,
         required: [true, "Please enter your product stock!"],
