@@ -55,12 +55,15 @@ export const adminDeleteProduct = (productId) =>
 // CUSTOM REACT QUERY HOOKS
 
 // Customer Hooks
-export function useGetAllProducts() {
+export const useGetAllProducts = (params = {}) => {
   return useQuery({
-    queryKey: ["products"],
-    queryFn: getAllProducts,
+    queryKey: ["products", params], 
+    queryFn: async () => {
+      const response = await api.get("/product/all", { params }); 
+      return response.data;
+    },
   });
-}
+};
 
 export function useGetProduct(productId) {
   return useQuery({

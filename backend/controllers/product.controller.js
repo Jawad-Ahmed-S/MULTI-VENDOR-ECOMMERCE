@@ -3,9 +3,8 @@ import { errorHandler } from "../utils/errorHandler.js";
 import Product from "../models/product.model.js";
 import Store from "../models/store.model.js";
 import { uploadToCloudinary } from "../utils/cloudinary.js";
+import ApiClass from "../utils/apiFEatures.js";
 
-// CUSTOMER CONTROLLERS
-// Get all approved products across the platform
 export const getAllProducts = catchAsyncError(async (req, res, next) => {
 
     const apiFeatures = new ApiClass(

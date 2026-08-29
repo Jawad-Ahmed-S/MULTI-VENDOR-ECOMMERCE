@@ -15,7 +15,6 @@ export default function ProductCard({ product }) {
   useEffect(() => {
     if (!product?.saleEndsAt) return;
 
-    // Update interval for live countdown
     const interval = setInterval(() => {
       setNow(Date.now());
     }, 1000);

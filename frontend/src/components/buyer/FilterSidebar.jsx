@@ -23,6 +23,8 @@ export default function FilterSidebar({
   minPrice,
   maxPrice,
   onPriceApply,
+  activeSale = false,
+  onActiveSaleChange,
   onReset,
 }) {
   // If no categories passed or empty array, fall back to default list
@@ -165,6 +167,28 @@ export default function FilterSidebar({
             Apply
           </button>
         </div>
+
+      </div>
+      {/* Active Sale Filter */}
+      <div className="border-t border-border pt-4">
+        <label className="flex items-center justify-between gap-3 cursor-pointer">
+          <div>
+            <h4 className="font-display text-xs font-semibold text-ink uppercase tracking-wider">
+              Active Sale
+            </h4>
+
+            <p className="text-xs text-ink-muted mt-1">
+              Show products with an active sale
+            </p>
+          </div>
+
+          <input
+            type="checkbox"
+            checked={activeSale}
+            onChange={(e) => onActiveSaleChange(e.target.checked)}
+            className="w-4 h-4 accent-current cursor-pointer"
+          />
+        </label>
       </div>
     </div>
   );

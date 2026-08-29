@@ -21,6 +21,8 @@ export default function SearchResultsPage() {
   const minRatingParam = searchParams.get("minRating");
   const minRating = minRatingParam ? Number(minRatingParam) : 0;
 
+  const activeSale = searchParams.get("activeSale") === "true";
+
   const page = Number(searchParams.get("page")) || 1;
 
   const updateParams = (updates, resetPage = true) => {
@@ -46,6 +48,7 @@ export default function SearchResultsPage() {
     ...(minPrice ? { minPrice } : {}),
     ...(maxPrice ? { maxPrice } : {}),
     ...(minRating ? { minRating } : {}),
+    ...(activeSale ? { activeSale: "true" } : {}),
   };
 
   const { data, isLoading, isError } = useSearchResults(queryParams);
@@ -83,6 +86,8 @@ export default function SearchResultsPage() {
             maxPrice={maxPrice}
             onPriceApply={(min, max) => updateParams({ minPrice: min, maxPrice: max })}
             minRating={minRating}
+            activeSale={activeSale}
+            onActiveSaleChange={(value) => updateParams({ activeSale: value ? "true" : null })}
             onRatingChange={(stars) => updateParams({ minRating: stars || null })}
             onReset={handleReset}
           />
