@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Send, ArrowLeft, MessageSquare, ChevronUp } from "lucide-react";
-import MessageBubble from "./MessageBubble";
+import MessageBubble from "./messageBubble";
 
 /**
  * conversation: the active conversation doc (populated with buyer/seller)

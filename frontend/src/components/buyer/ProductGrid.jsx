@@ -1,4 +1,4 @@
-import ProductCard from "./ProductCard"
+import ProductCard from "./productCard"
 import EmptyState from "../common/EmptyState";
 
 export default function ProductGrid({ products = [] }) {

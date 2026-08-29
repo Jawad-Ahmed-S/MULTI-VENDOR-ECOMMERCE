@@ -40,8 +40,6 @@ import CreateEventPage from "./pages/seller/createEventPage.jsx"
 import StoreEventsPage from "./pages/seller/storeEventsPage.jsx"
 import ActivationSuccess from "./pages/ActivationSucess.jsx"
 import UserDetailsPage from "./pages/UserDetailsPage.jsx"
-// import Wishlist from "./pages/Wishlist.jsx"
-// import Cart from "./pages/Cart.jsx"
 
 // Maps each role to the base URL it should land on / be redirected to.
 const HOME_BY_ROLE = {

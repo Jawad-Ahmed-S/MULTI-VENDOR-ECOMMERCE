@@ -1,4 +1,4 @@
-import ProductCard from "./ProductCard";
+import ProductCard from "./productCard";
 import StoreCard from "./StoreCard";
 import EmptyState from "../common/EmptyState";
 

@@ -2,8 +2,8 @@ import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { useQueryClient } from "@tanstack/react-query";
-import ConversationList from "../components/common/ConversationList";
-import ChatWindow from "../components/common/ChatWindow";
+import ConversationList from "../components/common/conversationList";
+import ChatWindow from "../components/common/chatWindow";
 import {
   useGetBuyerConversations,
   useGetSellerConversations,
