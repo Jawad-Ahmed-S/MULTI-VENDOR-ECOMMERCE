@@ -6,7 +6,7 @@ import { useGetMyProduct } from "../../api/product.js";
 // ASSUMED hook, same as StorePerformancePage.jsx — see
 // PERFORMANCE_PAGES_GUIDELINES.md for what to swap if it doesn't exist.
 import { useGetStoreOrders } from "../../api/order.js";
-import PageTabs from "../../components/seller/PageTabs.jsx";
+import PageTabs from "../../components/seller/pageTabs.jsx";
 
 const COLOR = {
   accent: "#2F6E5E",

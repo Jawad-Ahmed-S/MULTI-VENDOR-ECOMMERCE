@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useGetMyProduct, useUpdateProduct, useDeleteProduct } from "../../api/product.js";
 import { Package, Save, Trash2, Plus, Minus, ArrowLeft, Upload, Image as ImageIcon, BarChart3 } from "lucide-react";
-import PageTabs from "../../components/seller/PageTabs.jsx";
+import PageTabs from "../../components/seller/pageTabs.jsx";
 
 export default function ProductDetailsPage() {
   const { productId } = useParams();
