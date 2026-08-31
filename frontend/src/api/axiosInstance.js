@@ -2,7 +2,7 @@ import axios from "axios"
 import { store } from "../redux/store.js"
 
 const api = axios.create({
-  baseURL: "http://localhost:8000/api/v1/",
+  baseURL: `${import.meta.env.VITE_BACKEND_URL}/api/v1/`,
 })
  
 api.interceptors.request.use((config) => {
