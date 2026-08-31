@@ -45,7 +45,7 @@ export default function CreateEventPage() {
         endDate,
       },
       {
-        onSuccess: () => navigate(`/seller/store/${storeId}/events`),
+        onSuccess: () => navigate(`/seller/events`),
         onError: (err) => setErrorMsg(err.response?.data?.message || "Failed to create event."),
       }
     );

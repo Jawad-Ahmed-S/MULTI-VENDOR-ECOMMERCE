@@ -3,7 +3,7 @@ import { useParams, Link } from "react-router-dom";
 import { useGetMyStore, useUpdateStore } from "../../api/store.js";
 import { useGetStoreProducts, useDeleteProduct } from "../../api/product.js";
 import ProductTable from "../../components/seller/ProductTable.jsx";
-import { Store, PlusCircle, Save, Upload, ShoppingBag, Lock, Unlock } from "lucide-react";
+import { Store, PlusCircle, Save, Upload, ShoppingBag, Lock, Unlock, BarChart3 } from "lucide-react";
 
 export default function StoreDetailsPage() {
   const { storeId } = useParams();
@@ -125,6 +125,14 @@ export default function StoreDetailsPage() {
               <button className="flex items-center gap-2 bg-surface border border-border text-ink hover:bg-surface-muted rounded-md px-4 py-2 text-sm font-medium transition-colors cursor-pointer">
                 <PlusCircle className="w-4 h-4 text-brand" />
                 Add Product
+              </button>
+            </Link>
+
+            {/* Secondary Action: View Performance */}
+            <Link to={`/seller/store/${storeId}/performance`}>
+              <button className="flex items-center gap-2 bg-surface border border-border text-ink hover:bg-surface-muted rounded-md px-4 py-2 text-sm font-medium transition-colors cursor-pointer">
+                <BarChart3 className="w-4 h-4 text-brand" />
+                View Performance
               </button>
             </Link>
 

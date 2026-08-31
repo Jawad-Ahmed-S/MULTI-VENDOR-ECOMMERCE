@@ -1,5 +1,6 @@
 import { ArrowRight } from "lucide-react"
 import heroImage from "../assets/hero-image.jpg"
+import { Link } from "react-router-dom"
 export default function Hero() {
   return (
     <section className="relative w-full h-[360px] sm:h-[420px] md:h-[480px] lg:h-[560px] overflow-hidden bg-surface-muted group">
@@ -28,10 +29,12 @@ export default function Hero() {
             quality, curated, delivered fast.
           </p>
 
-          <button className="h-9 sm:h-10 md:h-11 bg-accent text-white rounded-md px-4 sm:px-5 md:px-6 text-xs sm:text-sm font-medium inline-flex items-center gap-2 hover:brightness-95">
+          <Link to="/products">
+          <button className="h-9 sm:h-10 md:h-11 cursor-pointer bg-accent text-white rounded-md px-4 sm:px-5 md:px-6 text-xs sm:text-sm font-medium inline-flex items-center gap-2 hover:brightness-95">
             Start shopping
             <ArrowRight size={16} strokeWidth={2} />
           </button>
+          </Link>
         </div>
       </div>
     </section>

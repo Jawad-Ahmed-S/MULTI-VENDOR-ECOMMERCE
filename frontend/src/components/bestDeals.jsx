@@ -25,11 +25,18 @@ export default function BestDeals() {
 
       {deals.length > 0 && (
         <>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-            {deals.map((deal) => (
-              <ProductCard key={deal._id || deal.id} product={deal} />
-            ))}
-          </div>
+        <div className="flex overflow-x-auto lg:overflow-x-visible justify-start lg:justify-around gap-4 pb-4 snap-x snap-mandatory">
+          {deals.slice(0, 5).map((deal) => (
+            <div 
+              key={deal._id || deal.id} 
+              className="shrink-0 w-[75%] sm:w-[45%] md:w-[30%] lg:w-[18%] max-w-[240px] snap-start"
+            >
+              <ProductCard product={deal} />
+            </div>
+          ))}
+        </div>
+
+
 
           <div className="text-center mt-8">
             <Link to="/products">

@@ -40,6 +40,8 @@ import CreateEventPage from "./pages/seller/createEventPage.jsx"
 import StoreEventsPage from "./pages/seller/storeEventsPage.jsx"
 import ActivationSuccess from "./pages/ActivationSucess.jsx"
 import UserDetailsPage from "./pages/UserDetailsPage.jsx"
+import StorePerformancePage from "./pages/seller/storePerformance.jsx"
+import ProductPerformancePage from "./pages/seller/productPerformance.jsx"
 
 // Maps each role to the base URL it should land on / be redirected to.
 const HOME_BY_ROLE = {
@@ -104,9 +106,11 @@ export default function AppRouter() {
             <Route path="/seller/store/:storeId" element={<StoreDetailsPage />} />
             <Route path="/seller/products" element={<MyProductsPage />} />
             <Route path="/seller/product/:productId" element={<ProductDetailsPage />} />
+            <Route path="/seller/product/:productId/performance" element={<ProductPerformancePage />} />
             <Route path="/seller/store/create" element={<CreateStorePage />} />
             <Route path="/seller/store/:storeId/product/create" element={<CreateProductPage />} />
             <Route path="/seller/store/:storeId/orders" element={<SellerStoreOrdersPage />} />
+            <Route path="/seller/store/:storeId/performance" element={<StorePerformancePage />} />
             <Route path="/seller/orders" element={<SellerAllOrdersPage />} />
             <Route path="/seller/:storeId/events/create" element={<CreateEventPage />} />
             <Route path="/seller/events" element={<StoreEventsPage />} />

@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useGetMyProduct, useUpdateProduct, useDeleteProduct } from "../../api/product.js";
-import { Package, Save, Trash2, Plus, Minus, ArrowLeft, Upload, Image as ImageIcon } from "lucide-react";
+import { Package, Save, Trash2, Plus, Minus, ArrowLeft, Upload, Image as ImageIcon, BarChart3 } from "lucide-react";
+import PageTabs from "../../components/seller/PageTabs.jsx";
 
 export default function ProductDetailsPage() {
   const { productId } = useParams();
@@ -125,12 +126,21 @@ export default function ProductDetailsPage() {
 
   return (
     <div className="max-w-5xl mx-auto w-full space-y-6 font-sans px-4 sm:px-6">
-      <button
-        onClick={() => navigate(-1)}
-        className="flex items-center gap-1.5 text-xs text-brand font-medium hover:text-accent transition-colors cursor-pointer"
-      >
-        <ArrowLeft className="w-4 h-4" /> Back to listings
-      </button>
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <button
+          onClick={() => navigate(-1)}
+          className="flex items-center gap-1.5 text-xs text-brand font-medium hover:text-accent transition-colors cursor-pointer"
+        >
+          <ArrowLeft className="w-4 h-4" /> Back to listings
+        </button>
+
+        <PageTabs
+          tabs={[
+            { to: `/seller/product/${productId}`, label: "Details", icon: Package, end: true },
+            { to: `/seller/product/${productId}/performance`, label: "Performance", icon: BarChart3 },
+          ]}
+        />
+      </div>
 
       <div className="flex justify-between items-center border-b border-border pb-4">
         <div>
